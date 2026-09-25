@@ -19,5 +19,19 @@
     "description": "Example expense #3 from Alice",
     "payer": "Alice",
     "amount": 2
+  },
+  {
+    "id": "4",
+    "date": "2026-09-18",
+    "description": "New random Expense",
+    "payer": "New random Payer",
+    "amount": 91.76035022929494
+  },
+  {
+    "id": "5",
+    "date": "2026-09-18",
+    "description": "New random Expense",
+    "payer": "New random Payer",
+    "amount": 56.23872484142709
   }
 ]
