@@ -7,8 +7,9 @@
     "node": "24.x"
   },
   "scripts": {
-    "dev": "node --watch app.ts",
-    "start": "node app.ts",
+    "build": "npm install && npx prisma contract emit && npx prisma db update",
+    "dev": "nodemon npm start",
+    "start": "node ./bin/www",
     "typecheck": "tsc --noEmit",
     "contract:emit": "prisma contract emit"
   },

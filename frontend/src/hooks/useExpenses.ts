@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { Expense } from '../types/Expense';
 
-const host = import.meta.env.VITE_API_URL || 'http://unknown-api-url.com';
+const host = (import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api').replace(/\/$/, '');
 
 interface UseExpensesResult {
   expenses: Expense[];
