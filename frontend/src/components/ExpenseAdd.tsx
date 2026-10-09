@@ -1,50 +1,86 @@
-import { useState } from "react";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import type { NewExpense } from "../types/Expense";
 
 interface ExpenseAddProps {
-  addExpense: (expense: NewExpense) => void;
+  addExpense: (newExpense: NewExpense) => void;
 }
 
-function ExpenseAdd({ addExpense }: ExpenseAddProps) {
-  /* One state per input field */
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState('');
-  const [payer, setPayer] = useState('Bob');
-  const [errors, setErrors] = useState<{ description?: string; amount?: string }>({});
+// Define a schema for an expense
+const expenseSchema = z.object({
+  description: z.string().max(200, 'Description cannot be longer than 200 characters'),
+  amount: z.number().min(0.01, 'Amount must be positive'),
+  payer: z.enum(['Bob', "Alice"], {message: "Payer must be either Bob or Alice"}),
+  date: z.string(),
+});
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent default form submission
-    const newErrors: typeof errors = {};
-    if (!description) newErrors.description = 'Description required';
-    if (!amount || parseFloat(amount) < 0.01) newErrors.amount = 'Amount required';
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length === 0) {
-      addExpense({
-        description: description,
-        amount: parseFloat(amount),
-        date: new Date().toISOString(),
-        payer: payer, // Hardcoded for now, will be dynamic later
-      });
-      setDescription('');
-      setAmount('');
-      setPayer('');
-      setErrors({});
-    }
+type ExpenseFormData = z.infer<typeof expenseSchema>;
+
+function ExpenseAdd({addExpense}: ExpenseAddProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ExpenseFormData>({
+    resolver: zodResolver(expenseSchema)
+  });
+
+  const onSubmit = (data: ExpenseFormData) => {
+    console.log("Valid expenses : ", data);
+
+    addExpense(data);
   };
 
-
   return (
-    <form onSubmit={handleSubmit}>
-      <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
-      {errors.description && <span>{errors.description}</span>}
-      <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Amount" />
-      {errors.amount && <span>{errors.amount}</span>}
-      <input type="select" value={payer} onChange={(e) => setPayer(e.target.value)} placeholder="Payer">
-        <option value="ALICE">Alice</option>
-        <option value="BOB">Bob</option>
-      </input>
-      <button type="submit">Add</button>
-    </form>
+    <div>
+      <h2>Add a new random Expense</h2>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div>
+          <label>Payer : </label>
+          <select {...register("payer")}>
+            <option value="Bob">Bob</option>
+            <option value="Alice">Alice</option>
+          </select>
+        </div>
+        <div>
+          <label>
+            Date :
+            <input
+              type="date"
+              {...register("date")}
+            />
+            {errors.date && <span>{errors.date.message}</span>}
+          </label>
+        </div>
+        <div>
+          <label>
+            Description :
+            <input
+              type="text"
+              {...register("description")}
+              placeholder="Description"
+            />
+            {errors.description && <span>{errors.description.message}</span>}
+          </label>
+        </div>
+        <div>
+          <label>
+            Amount :
+            <input
+              type="number"
+              {...register("amount", {
+                valueAsNumber: true,
+              })}
+              placeholder="Enter amount"
+            />
+            {errors.amount && <span>{errors.amount.message}</span>}
+          </label>
+        </div>
+        <button type="submit">Add</button>
+      </form>
+    </div>
   );
 }
+
 export default ExpenseAdd;
