@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { Expense } from '../types/Expense';
+import type { Expense, NewExpense } from '../types/Expense';
 
 const host = (import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api').replace(/\/$/, '');
 
@@ -7,7 +7,7 @@ interface UseExpensesResult {
   expenses: Expense[];
   loading: boolean;
   error: string | null;
-  addExpense: (expense: Expense) => Promise<void>;
+  addExpense: (expense: NewExpense) => Promise<void>;
   resetExpenses: () => Promise<void>;
 }
 
@@ -43,7 +43,7 @@ function useExpenses(): UseExpensesResult {
   }, [fetchExpenses]);
 
   const addExpense = useCallback(
-    async (expense: Expense) => {
+    async (expense: NewExpense) => {
       try {
         setError(null);
         const response = await fetch(`${host}/expenses`, {

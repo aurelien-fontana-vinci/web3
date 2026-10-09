@@ -6,8 +6,9 @@ import useExpenses from "../hooks/useExpenses";
 import ExpenseReset from "../components/ExpenseReset";
 import ExpenseSorter from "../components/ExpenseSorter";
 
+
 function Home() {
-  const { expenses, addExpense, resetExpenses, error } = useExpenses();
+  const { expenses, addExpense, resetExpenses } = useExpenses();
   const [sortingAlgo, setSortingAlgo] = useState<(a: Expense, b: Expense) => number>(() => () => 1);
 
   const handleAlgoChange = (algo: (a: Expense, b: Expense) => number) => {
@@ -16,9 +17,8 @@ function Home() {
 
   const sortedExpenses = [...expenses].sort(sortingAlgo);
 
-  return <div>
+  return <div className="home">
     <h1>Manage your expenses</h1>
-    {error && <p style={{ color: 'crimson' }}>{error}</p>}
     <ExpenseAdd addExpense={addExpense} />
     <ExpenseReset resetExpenses={resetExpenses}/>
     <h2>Your expenses</h2>
