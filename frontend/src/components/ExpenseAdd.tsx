@@ -21,6 +21,7 @@ function ExpenseAdd({addExpense}: ExpenseAddProps) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ExpenseFormData>({
     resolver: zodResolver(expenseSchema)
@@ -30,6 +31,7 @@ function ExpenseAdd({addExpense}: ExpenseAddProps) {
     console.log("Valid expenses : ", data);
 
     addExpense(data);
+    reset();
   };
 
   return (
