@@ -5,12 +5,11 @@ interface ExpenseAddProps {
   addExpense: (expense: NewExpense) => void;
 }
 
-
 function ExpenseAdd({ addExpense }: ExpenseAddProps) {
   /* One state per input field */
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
-  const [payer, setPayer] = useState('');
+  const [payer, setPayer] = useState('Bob');
   const [errors, setErrors] = useState<{ description?: string; amount?: string }>({});
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -40,7 +39,7 @@ function ExpenseAdd({ addExpense }: ExpenseAddProps) {
       {errors.description && <span>{errors.description}</span>}
       <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Amount" />
       {errors.amount && <span>{errors.amount}</span>}
-      <input type="select" value={payer} onChange={(e) => setPayer(e.target.value)}>
+      <input type="select" value={payer} onChange={(e) => setPayer(e.target.value)} placeholder="Payer">
         <option value="ALICE">Alice</option>
         <option value="BOB">Bob</option>
       </input>
